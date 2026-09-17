@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-app-service
+  labels:
+    app: ml-app
+spec:
+  type: LoadBalancer # Also compatible with Minikube via 'minikube tunnel'
+  selector:
+    app: ml-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8000

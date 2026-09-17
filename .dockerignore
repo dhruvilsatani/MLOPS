@@ -1,0 +1,32 @@
+# Version control
+.git
+.gitignore
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS / editor cruft
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# CI / docs not needed in the image
+.github/
+README.md
+
+# Model is regenerated during build
+model/
+
+# MLflow tracking data (local runs)
+mlruns/
+mlartifacts/

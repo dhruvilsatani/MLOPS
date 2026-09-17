@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iris Classifier</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --ink: #1f2933;
+      --muted: #6b7280;
+      --accent: #4f46e5;
+      --accent-2: #7c3aed;
+      --ok: #059669;
+      --err: #dc2626;
+      --line: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #f4f6fb 60%, #faf5ff 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+    .wrap { width: 100%; max-width: 560px; }
+    header { text-align: center; margin-bottom: 24px; }
+    header h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: -0.02em; }
+    header p { margin: 0; color: var(--muted); font-size: 15px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(31, 41, 51, 0.06);
+    }
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .field label .val {
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .row { display: flex; gap: 12px; margin-top: 20px; }
+    button {
+      flex: 1;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.05s ease, opacity 0.2s ease;
+    }
+    button:active { transform: translateY(1px); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+    .btn-ghost { background: #f3f4f6; color: var(--ink); flex: 0 0 auto; }
+    button:disabled { opacity: 0.6; cursor: default; }
+    .result {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      text-align: center;
+      min-height: 74px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .result .label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .result .species { font-size: 24px; font-weight: 700; margin-top: 4px; }
+    .result .species.ok { color: var(--ok); }
+    .result .species.err { color: var(--err); }
+    .result .hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+    .apikey { margin-top: 18px; }
+    .apikey summary { cursor: pointer; font-size: 13px; color: var(--muted); }
+    .apikey input {
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    footer { text-align: center; margin-top: 18px; font-size: 12px; color: var(--muted); }
+    .emoji { font-size: 30px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🌸 Iris Flower Classifier</h1>
+      <p>Move the sliders to describe a flower, then let the model guess its species.</p>
+    </header>
+
+    <div class="card">
+      <div class="field">
+        <label>Sepal length <span class="val" id="v-sepal_length">5.1 cm</span></label>
+        <input type="range" id="sepal_length" min="0.1" max="8" step="0.1" value="5.1" />
+      </div>
+      <div class="field">
+        <label>Sepal width <span class="val" id="v-sepal_width">3.5 cm</span></label>
+        <input type="range" id="sepal_width" min="0.1" max="5" step="0.1" value="3.5" />
+      </div>
+      <div class="field">
+        <label>Petal length <span class="val" id="v-petal_length">1.4 cm</span></label>
+        <input type="range" id="petal_length" min="0.1" max="7" step="0.1" value="1.4" />
+      </div>
+      <div class="field">
+        <label>Petal width <span class="val" id="v-petal_width">0.2 cm</span></label>
+        <input type="range" id="petal_width" min="0.1" max="3" step="0.1" value="0.2" />
+      </div>
+
+      <div class="row">
+        <button class="btn-primary" id="predict-btn">Predict species</button>
+        <button class="btn-ghost" id="reset-btn" title="Reset to a classic Setosa sample">Reset</button>
+      </div>
+
+      <div class="result" id="result">
+        <span class="emoji">🌱</span>
+        <div class="hint">Your prediction will appear here.</div>
+      </div>
+
+      <details class="apikey">
+        <summary>Advanced: API key (only if the server requires one)</summary>
+        <input type="password" id="api-key" placeholder="x-api-key value" autocomplete="off" />
+      </details>
+    </div>
+
+    <footer>Powered by a RandomForest model served with FastAPI.</footer>
+  </div>
+
+  <script>
+    const FEATURES = ["sepal_length", "sepal_width", "petal_length", "petal_width"];
+    const DEFAULTS = { sepal_length: 5.1, sepal_width: 3.5, petal_length: 1.4, petal_width: 0.2 };
+    const EMOJI = { Setosa: "🌸", Versicolor: "🌺", Virginica: "🪻" };
+
+    function syncLabels() {
+      FEATURES.forEach((f) => {
+        const el = document.getElementById(f);
+        document.getElementById("v-" + f).textContent = Number(el.value).toFixed(1) + " cm";
+      });
+    }
+    FEATURES.forEach((f) => document.getElementById(f).addEventListener("input", syncLabels));
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      FEATURES.forEach((f) => (document.getElementById(f).value = DEFAULTS[f]));
+      syncLabels();
+      showIdle();
+    });
+
+    function showIdle() {
+      document.getElementById("result").innerHTML =
+        '<span class="emoji">🌱</span><div class="hint">Your prediction will appear here.</div>';
+    }
+
+    function showResult(species) {
+      const emoji = EMOJI[species] || "🌼";
+      document.getElementById("result").innerHTML =
+        '<span class="emoji">' + emoji + '</span>' +
+        '<div class="label">Predicted species</div>' +
+        '<div class="species ok">' + species + '</div>';
+    }
+
+    function showError(msg) {
+      document.getElementById("result").innerHTML =
+        '<div class="label">Something went wrong</div>' +
+        '<div class="species err">Error</div>' +
+        '<div class="hint">' + msg + '</div>';
+    }
+
+    async function predict() {
+      const btn = document.getElementById("predict-btn");
+      btn.disabled = true;
+      btn.textContent = "Predicting...";
+      try {
+        const payload = {};
+        FEATURES.forEach((f) => (payload[f] = Number(document.getElementById(f).value)));
+
+        const headers = { "Content-Type": "application/json" };
+        const key = document.getElementById("api-key").value.trim();
+        if (key) headers["x-api-key"] = key;
+
+        const res = await fetch("/predict", {
+          method: "POST",
+          headers,
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          let detail = "HTTP " + res.status;
+          try { const j = await res.json(); if (j.detail) detail = typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail); } catch (e) {}
+          showError(detail);
+          return;
+        }
+        const data = await res.json();
+        showResult(data.predicted_class);
+      } catch (e) {
+        showError("Could not reach the API. Is the server running?");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Predict species";
+      }
+    }
+
+    document.getElementById("predict-btn").addEventListener("click", predict);
+    syncLabels();
+  </script>
+</body>
+</html>

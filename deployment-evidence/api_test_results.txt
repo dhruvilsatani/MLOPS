@@ -1,0 +1,8 @@
+=== HEALTH CHECK ===
+{"status":"ok","model_loaded":true}
+
+=== SETOSA PREDICTION ===
+{"prediction":0,"predicted_class":"Setosa"}
+
+=== VIRGINICA PREDICTION ===
+{"prediction":2,"predicted_class":"Virginica"}

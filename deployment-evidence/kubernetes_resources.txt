@@ -1,0 +1,16 @@
+=== KUBERNETES NODES ===
+NAME           STATUS   ROLES           AGE    VERSION        INTERNAL-IP   EXTERNAL-IP   OS-IMAGE           KERNEL-VERSION     CONTAINER-RUNTIME
+844c9dbebb06   Ready    control-plane   113m   v1.34.1+k3s1   172.18.0.6    <none>        K3s v1.34.1+k3s1   6.12.76-linuxkit   containerd://2.1.4-k3s2
+
+=== PODS ===
+NAME                                 READY   STATUS    RESTARTS   AGE   IP          NODE           NOMINATED NODE   READINESS GATES
+ml-app-deployment-58dfbcf9c8-5rsxw   1/1     Running   0          15m   10.42.0.8   844c9dbebb06   <none>           <none>
+ml-app-deployment-58dfbcf9c8-dq5gm   1/1     Running   0          16m   10.42.0.7   844c9dbebb06   <none>           <none>
+
+=== SERVICE ===
+NAME             TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+ml-app-service   LoadBalancer   10.43.134.3   172.18.0.6    80:31204/TCP   14m
+
+=== DEPLOYMENT ===
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+ml-app-deployment   2/2     2            2           24m

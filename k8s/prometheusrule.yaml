@@ -1,0 +1,38 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ml-app-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+  - name: ml-app.rules
+    rules:
+
+    - alert: MlAppDown
+      expr: up{job="ml-app-service"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ml-app is down"
+
+    - alert: MlAppHighErrorRate
+      expr: sum(rate(http_requests_total{handler="/predict", status=~"4..|5.."}[1m])) > 0
+      for: 30s
+      labels:
+        severity: warning
+      annotations:
+        summary: "ml-app /predict is returning errors"
+
+    - alert: MlAppPodRestarting
+      expr: increase(kube_pod_container_status_restarts_total{pod=~"ml-app-.*"}[10m]) > 3
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "ml-app pod is restarting frequently"
+
+
+
