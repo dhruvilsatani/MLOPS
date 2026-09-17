@@ -36,7 +36,7 @@ jobs:
         with:
           python-version: "3.9"
           cache: 'pip'
-          cache-dependency-path: requirements-dev.text
+          cache-dependency-path: requirements-dev.txt
 
       - name: Install dependencies
         run: |
