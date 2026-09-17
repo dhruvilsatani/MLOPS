@@ -47,7 +47,7 @@ jobs:
         run: python train.py --no-tracking
 
       - name: Run tests
-        run: pytest -q
+        run: python -m pytest -q
 
   build:
     name: Build & Push Image
