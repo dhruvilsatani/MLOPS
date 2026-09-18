@@ -12,6 +12,7 @@ on:
       - "Dockerfile"
       - "static/**"
       - "tests/**"
+      - ".github/**"
   pull_request:
     branches: [main]
     paths:
@@ -109,3 +110,8 @@ jobs:
           git add k8s/ml-app-chart/values.yaml
           git commit -m "Update image tag to ${{ github.sha }}"
           git push
+
+
+
+
+# t

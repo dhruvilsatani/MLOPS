@@ -15,4 +15,4 @@ terraform/terraform.tfstate.backup
 k8s/alertmanager_values.yaml
 
 .claude/settings.local.json
-EOF
+deployment-evidence/
