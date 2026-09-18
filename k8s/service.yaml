@@ -5,7 +5,7 @@ metadata:
   labels:
     app: ml-app
 spec:
-  type: LoadBalancer # Also compatible with Minikube via 'minikube tunnel'
+  type: ClusterIP # Also compatible with Minikube via 'minikube tunnel'
   selector:
     app: ml-app
   ports:
