@@ -54,7 +54,7 @@ class IrisData(BaseModel):
     sepal_width: float = Field(..., gt=0, description="Sepal width in cm")
     petal_length: float = Field(..., gt=0, description="Petal length in cm")
     petal_width: float = Field(..., gt=0, description="Petal width in cm")
-#hi
+#hig dff
 
 class PredictionResponse(BaseModel):
     prediction: int
