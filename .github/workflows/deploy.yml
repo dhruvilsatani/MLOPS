@@ -3,8 +3,24 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [main]
+    paths:
+      - "app.py"
+      - "train.py"
+      - "requirements-dev.txt"
+      - "requirement-prod.txt"
+      - "Dockerfile"
+      - "static/**"
+      - "tests/**"
   pull_request:
     branches: [main]
+    paths:
+      - "app.py"
+      - "train.py"
+      - "requirements-dev.txt"
+      - "requirement-prod.txt"
+      - "Dockerfile"
+      - "static/**"
+      - "tests/**"
 
 jobs:
   lint:
