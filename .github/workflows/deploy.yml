@@ -87,9 +87,21 @@ jobs:
         with:
           context: .
           push: true
+          plateforms: linux/amd64,linux/arm64
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/ml-app:latest
             ${{ secrets.DOCKER_USERNAME }}/ml-app:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Update Helm image tag
+        run: |
+          sed -i "0,/tag:.*/s//tag: ${{ github.sha }}/" k8s/ml-app-chart/values.yaml
+
+      - name: Commit updated image tag
+        run: |
+          git config user.name "dhruvilsatani"
+          git config user.email "dhruvilsatani98@gmail.com"
+          git add k8s/ml-app-chart/values.yaml
+          git commit -m "Update image tag to ${{ github.sha }}"
+          git push
