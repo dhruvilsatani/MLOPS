@@ -1,0 +1,35 @@
+replicaCount: 2
+
+app:
+  name: ml-app
+
+image:
+  repository: dhruvilsatani/ml-app
+  tag: latest
+  pullPolicy: Always
+
+containerPort: 8000
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 512Mi
+
+revisionHistoryLimit: 2
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  host: ""
+
+monitoring:
+  enabled: true
+  releaseLabel: monitoring
+  namespace: monitoring

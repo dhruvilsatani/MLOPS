@@ -1,0 +1,37 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Values.app.name }}-alerts
+  namespace: {{ .Values.monitoring.namespace }}
+  labels:
+    release: {{ .Values.monitoring.releaseLabel }}
+spec:
+  groups:
+  - name: {{ .Values.app.name }}.rules
+    rules:
+
+    - alert: MlAppDown
+      expr: up{job="{{ .Values.app.name }}-service"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "{{ .Values.app.name }} is down"
+
+    - alert: MlAppHighErrorRate
+      expr: sum(rate(http_requests_total{handler="/predict", status=~"4..|5.."}[1m])) > 0
+      for: 30s
+      labels:
+        severity: warning
+      annotations:
+        summary: "{{ .Values.app.name }} /predict is returning errors"
+
+    - alert: MlAppPodRestarting
+      expr: increase(kube_pod_container_status_restarts_total{pod=~"{{ .Values.app.name }}-.*"}[10m]) > 3
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "{{ .Values.app.name }} pod is restarting frequently"
+{{- end }}
