@@ -11,6 +11,7 @@ mlruns/
 terraform/.terraform/
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
+terraform/terraform.tfvars
 
 k8s/alertmanager_values.yaml
 

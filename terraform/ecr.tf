@@ -6,3 +6,7 @@ resource "aws_ecr_repository" "ml_app" {
     scan_on_push = false
   }
 }
+
+resource "aws_ecr_repository" "mlflow_server" {
+  name = "mlflow-server"
+}

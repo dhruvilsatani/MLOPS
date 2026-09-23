@@ -70,3 +70,4 @@ resource "aws_lb_listener" "ml_app" {
 output "alb_dns_name" {
   value = aws_lb.ml_app.dns_name
 }
+

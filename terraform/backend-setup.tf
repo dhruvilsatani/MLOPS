@@ -22,6 +22,7 @@ terraform {
     skip_metadata_api_check     = true
     skip_region_validation      = true
     force_path_style            = true
+
   }
 }
 
@@ -43,6 +44,7 @@ provider "aws" {
     ecr = "http://localhost:4566"
      eks      = "http://localhost:4566"
      elbv2 = "http://localhost:4566"
+    rds      = "http://localhost:4566"
   }
 }
 
@@ -67,3 +69,4 @@ resource "aws_dynamodb_table" "tf_lock" {
     type = "S"
   }
 }
+
