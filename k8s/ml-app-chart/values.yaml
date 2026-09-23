@@ -5,7 +5,7 @@ app:
 
 image:
   repository: dhruvilsatani/ml-app
-  tag: 5814fac108e8c2a883a8a8ffc93462edad42a8b6
+  tag: 900e758b33b12029d7c318bea825515f57482c1a
   pullPolicy: Always
 
 containerPort: 8000
