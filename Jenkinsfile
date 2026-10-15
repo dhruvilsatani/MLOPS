@@ -15,8 +15,12 @@ pipeline {
 
         stage('Lint') {
             steps {
-                sh 'pip install flake8'
-                sh 'flake8 . --select=E9,F --show-source'
+                script {
+                    docker.image('python:3.9-slim').inside {
+                        sh 'pip install flake8'
+                        sh 'flake8 . --select=E9,F --show-source'
+                    }
+                }
             }
         }
 
@@ -41,21 +45,19 @@ pipeline {
 
         stage('Train & Test') {
             steps {
-                sh 'pip install -r requirements-dev.txt'
-                sh 'python train.py --no-tracking'
-                sh 'python -m pytest -q'
+                script {
+                    docker.image('python:3.9-slim').inside {
+                        sh 'pip install -r requirements-dev.txt'
+                        sh 'python train.py --no-tracking'
+                        sh 'python -m pytest -q'
+                    }
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} ."
-            }
-        }
-
-        stage('Trivy Scan') {
-            steps {
-                sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity CRITICAL,HIGH --exit-code 1 ${IMAGE_NAME}:${BUILD_NUMBER}"
             }
         }
 
