@@ -2,9 +2,11 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        IMAGE_NAME = "dhruvilsatani/ml-app"
-    }
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+    AZURE_CREDENTIALS = credentials('azure-sp-credentials')
+    IMAGE_NAME = "dhruvilsatani/ml-app"
+    ACR_NAME = "mlappacr1"
+       }
 
     stages {
         stage('Checkout') {
@@ -67,6 +69,18 @@ pipeline {
                 sh "docker push ${IMAGE_NAME}:${BUILD_NUMBER}"
             }
         }
+        stage('Deploy to AKS') {
+           steps {
+                sh """
+                    az login --service-principal -u ${AZURE_CREDENTIALS_USR} -p ${AZURE_CREDENTIALS_PSW} --tenant 70d30f56-bbca-47ce-bb1d-500137fb00f4
+                    az acr login --name ${ACR_NAME}
+                    docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${ACR_NAME}.azurecr.io/ml-app:${BUILD_NUMBER}
+                    docker push ${ACR_NAME}.azurecr.io/ml-app:${BUILD_NUMBER}
+                    az aks get-credentials --resource-group ml-app-rg --name ml-app-aks --overwrite-existing
+                    helm upgrade --install ml-app-azure k8s/ml-app-chart -f k8s/ml-app-chart/values-azure.yaml --set image.tag=${BUILD_NUMBER}
+                """
+    }
+}
     }
 
     post {
