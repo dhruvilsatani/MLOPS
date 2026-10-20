@@ -1,3 +1,4 @@
+{{- if .Values.mlflow.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,3 +34,4 @@ spec:
               value: "us-east-1"
             - name: MLFLOW_S3_ENDPOINT_URL
               value: "http://172.18.0.2:4566"
+{{- end }}

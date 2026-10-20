@@ -12,3 +12,6 @@ ingress:
 
 monitoring:
   enabled: false
+
+mlflow:
+  enabled: false
