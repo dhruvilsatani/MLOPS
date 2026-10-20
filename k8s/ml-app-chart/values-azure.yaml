@@ -1,0 +1,14 @@
+image:
+  repository: mlappacr1.azurecr.io/ml-app
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: NodePort
+  port: 80
+
+ingress:
+  enabled: false
+
+monitoring:
+  enabled: false
