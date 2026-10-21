@@ -11,6 +11,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 
 
 MODEL_PATH = os.getenv("MODEL_PATH", "model/model.pkl")
+APP_VERSION = os.getenv("APP_VERSION", "unknown")
 CLASS_NAMES = ["Setosa", "Versicolor", "Virginica"]
 
 # Directory holding the web UI (index.html + any assets).
@@ -89,7 +90,7 @@ def health():
     """Readiness/liveness probe target. 503 until the model is loaded."""
     if state["model"] is None:
         raise HTTPException(status_code=503, detail="Model not loaded.")
-    return {"status": "ok", "model_loaded": True}
+    return {"status": "ok", "model_loaded": True, "version": APP_VERSION}
 
 
 
